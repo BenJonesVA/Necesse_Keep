@@ -1,0 +1,66 @@
+services:
+  necesse:
+    container_name: necesse-server
+    image: brammys/necesse-server
+    restart: always
+    stdin_open: true
+    tty: false
+    ports:
+      - "${HOST_PORT:-14159}:14159/udp"
+    environment:
+      WORLD: ${WORLD:-world}
+      SLOTS: ${SLOTS:-10}
+      OWNER: ${OWNER:-}
+      MOTD: ${MOTD:-This server is made possible by Docker!}
+      PASSWORD: ${PASSWORD:-}
+      PAUSE: ${PAUSE:-0}
+      GIVE_CLIENTS_POWER: ${GIVE_CLIENTS_POWER:-1}
+      LOGGING: ${LOGGING:-1}
+      ZIP: ${ZIP:-1}
+    volumes:
+      - necesse-saves:/necesse/saves
+      - necesse-logs:/necesse/logs
+      - necesse-cfg:/necesse/cfg
+
+  control:
+    container_name: necesse-control
+    build: ./control
+    restart: always
+    environment:
+      NECESSE_CONTAINER_NAME: necesse-server
+      ENV_FILE_PATH: /app/config/.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./.env:/app/config/.env
+    networks:
+      - backend
+    depends_on:
+      - necesse
+
+  ui:
+    container_name: necesse-ui
+    build: ./ui
+    restart: always
+    ports:
+      - "${UI_PORT:-3000}:3000"
+    environment:
+      UI_PASSWORD_HASH: ${UI_PASSWORD_HASH}
+      SESSION_SECRET: ${SESSION_SECRET}
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+      CONTROL_URL: http://necesse-control:4000
+    volumes:
+      - necesse-logs:/necesse/logs:ro
+      - necesse-saves:/necesse/saves:ro
+    networks:
+      - backend
+    depends_on:
+      - control
+
+networks:
+  backend:
+
+volumes:
+  necesse-saves:
+  necesse-logs:
+  necesse-cfg:
+

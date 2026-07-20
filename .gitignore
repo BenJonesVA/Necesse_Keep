@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+
+necesse/saves/
+necesse/logs/
+necesse/cfg/
+
+node_modules/
+ui/client/dist/
+*.log

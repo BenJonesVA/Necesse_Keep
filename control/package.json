@@ -1,0 +1,14 @@
+{
+  "name": "necesse-control",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "dockerode": "^4.0.2",
+    "express": "^4.21.0"
+  }
+}
