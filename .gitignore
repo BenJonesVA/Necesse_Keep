@@ -2,6 +2,8 @@
 .env.*
 !.env.example
 
+.claude/
+
 necesse/saves/
 necesse/logs/
 necesse/cfg/
